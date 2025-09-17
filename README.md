@@ -23,3 +23,8 @@ Swagger para documentação dos endpoints
 🎯 Objetivo
 
 Fornecer uma API simples, bem documentada e fácil de consumir para fins acadêmicos e projetos pessoais relacionados ao universo dos animes.
+
+👥 Integrantes do Grupo
+- Vinícius de Souza Camargo Costa  
+- Arthur Fukunaga Nepomuceno  
+- Carlos Eduardo Campos Takeshita
