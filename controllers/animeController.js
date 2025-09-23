@@ -1,7 +1,7 @@
 import animeService from "../services/animeService.js";
 import { ObjectId } from "mongodb";
 
-const getAllanimes = async (requestAnimationFrame, res) =>{
+const getAllanimes = async (req, res) =>{
     try{
         const animes = await animeService.getAll();
         res.status(200).json({ animes: animes});
