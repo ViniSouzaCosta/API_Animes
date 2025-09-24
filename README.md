@@ -6,7 +6,7 @@ Uma API RESTful desenvolvida para fornecer informações sobre animes. Este proj
 
 Listagem de animes com detalhes (título, gênero, descrição, ano de lançamento, estúdio, etc.)
 
-Consulta de anime por ID ou nome
+Consulta de anime por ID
 
 Adição, edição e remoção de animes (endpoints CRUD)
 
