@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const descriptionSchema = new mongoose.Schema({
-    synopsis: Text,
-    background: Text,
+    synopsis: String,
+    background: String,
     tags: String
 })
 
