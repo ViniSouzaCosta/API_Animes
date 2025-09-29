@@ -1,0 +1,143 @@
+openapi: 3.0.0
+info:
+  title: API de Animes
+  description: Uma API RESTful desenvolvida para fornecer informações sobre animes. Este projeto foi criado como parte de um trabalho da disciplina de Desenvolvimento Web e tem como objetivo praticar a criação e consumo de APIs.
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000/api/animes
+    description: Servidor local
+paths:
+  /animes:
+    get:
+      tags:
+        - Animes
+      summary: Retorna a lista de todos os animes cadastrados
+      responses:
+        '200':
+          description: Lista de animes obtida com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Anime'
+        '500':
+          description: Erro interno do servidor.
+    post:
+      tags:
+        - Animes
+      summary: Cria um novo registro de anime
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnimeInput'
+      responses:
+        '201':
+          description: Anime criado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+        '400':
+          description: Dados de entrada inválidos.
+  /animes/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: ID do anime a ser buscado (geralmente um ID do MongoDB).
+    get:
+      tags:
+        - Animes
+      summary: Retorna um anime específico pelo ID
+      responses:
+        '200':
+          description: Detalhes do anime.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+        '404':
+          description: Anime não encontrado.
+    put:
+      tags:
+        - Animes
+      summary: Atualiza um anime existente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnimeInput'
+      responses:
+        '200':
+          description: Anime atualizado com sucesso.
+        '404':
+          description: Anime não encontrado.
+    delete:
+      tags:
+        - Animes
+      summary: Remove um anime pelo ID
+      responses:
+        '204':
+          description: Anime removido com sucesso. (No Content)
+        '404':
+          description: Anime não encontrado.
+components:
+  schemas:
+    Anime:
+      type: object
+      description: Modelo de dados de um anime, incluindo o ID após a criação.
+      properties:
+        id:
+          type: string
+          description: 'ID gerado automaticamente (ex: MongoDB ObjectId).'
+          example: 60d5ec49f6a5b4001c9a0b1c
+        nome:
+          type: string
+          description: Nome do anime.
+          example: Attack on Titan
+        genero:
+          type: string
+          description: Gênero principal do anime.
+          example: Shonen
+        sinopse:
+          type: string
+          description: Breve descrição da história.
+          example: A humanidade vive protegida por muros gigantes...
+        nota:
+          type: number
+          format: float
+          description: Nota de avaliação (0 a 10).
+          example: 9.1
+      required:
+        - nome
+        - genero
+    AnimeInput:
+      type: object
+      description: Dados necessários para criar ou atualizar um anime. Não inclui o ID.
+      properties:
+        nome:
+          type: string
+          description: Nome do anime.
+          example: Jujutsu Kaisen
+        genero:
+          type: string
+          description: Gênero principal do anime.
+          example: Aventura, Sobrenatural
+        sinopse:
+          type: string
+          description: Breve descrição da história.
+          example: Itadori Yuji é um estudante do ensino médio com habilidades físicas incríveis...
+        nota:
+          type: number
+          format: float
+          description: Nota de avaliação (0 a 10).
+          example: 8.9
+      required:
+        - nome
+        - genero
