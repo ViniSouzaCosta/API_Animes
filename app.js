@@ -1,7 +1,7 @@
 import express from "express";
-import mongoose from "mongoose";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
+import mongoose from "./config/db-connection.js";
 
 const app = express();
 
@@ -33,7 +33,7 @@ app.use("/", userRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-mongoose.connect("mongodb://127.0.0.1:27017/API_Animes")
+// mongoose.connect("mongodb://127.0.0.1:27017/API_ANIMES")
 
 const port = process.env.PORT || 4000;
 app.listen(port, (error) =>{
