@@ -13,8 +13,8 @@ const animeSchema = new mongoose.Schema({
     studio: [String], 
     genres: [String], 
     rating: String,
-    dub: [String], // agora dub é array
-    sub: [String], // agora sub é array
+    dub: [String], 
+    sub: [String], 
     imageUrl: [String],
     descriptions: [descriptionSchema]
 });
