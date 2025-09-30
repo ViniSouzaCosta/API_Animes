@@ -12,7 +12,7 @@ class animeService {
         }
     }
 
-    async Create(title,type,episodes_count,studio,genres,rating,dub,sub,descriptions){
+    async Create(title,type,episodes_count,studio,genres,rating,dub,sub,imageUrl,descriptions){
         try{
             const newAnime = new Anime({
                 title,
@@ -23,6 +23,7 @@ class animeService {
                 rating,
                 dub,
                 sub,
+                imageUrl,
                 descriptions,
             });
             await newAnime.save();
@@ -40,7 +41,7 @@ class animeService {
         }
     }
 
-    async Update(id,title,type,episodes_count,studio,genres,rating,dub,sub,descriptions){
+    async Update(id,title,type,episodes_count,studio,genres,rating,dub,sub,imageUrl,descriptions){
         try{
             const anime = await Anime.findByIdAndUpdate(
                 id,
@@ -53,6 +54,7 @@ class animeService {
                 rating,
                 dub,
                 sub,
+                imageUrl,
                 descriptions,  
                 },
                 { new: true}

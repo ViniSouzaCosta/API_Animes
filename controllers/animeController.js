@@ -13,8 +13,8 @@ const getAllanimes = async (req, res) =>{
 
 const createAnime = async (req, res) => {
     try{
-       const { title,type,episodes_count,studio,genres,rating,dub,sub,descriptions} = req.body;
-       await animeService.Create(title,type,episodes_count,studio,genres,rating,dub,sub,descriptions);
+       const { title,type,episodes_count,studio,genres,rating,dub,sub,imageUrl,descriptions} = req.body;
+       await animeService.Create(title,type,episodes_count,studio,genres,rating,dub,sub,imageUrl,descriptions);
        res.sendStatus(201); 
     }catch(error){
         console.log(error);
@@ -41,8 +41,8 @@ const updateAnime = async (req, res) =>{
     try{
         if(ObjectId.isValid(req.params.id)){
             const id = req.params.id;
-            const {title,type,episodes_count,studio,genres,rating,dub,sub,descriptions} = req.body;
-            const anime = await animeService.Update(id,title,type,episodes_count,studio,genres,rating,dub,sub,descriptions);
+            const {title,type,episodes_count,studio,genres,rating,dub,sub,imageUrl,descriptions} = req.body;
+            const anime = await animeService.Update(id,title,type,episodes_count,studio,genres,rating,dub,sub,imageUrl,descriptions);
             res.status(200).json({anime});
         }else{
             res.sendStatus(400);

@@ -54,6 +54,13 @@ paths:
       tags:
         - Animes
       summary: Retorna um anime específico pelo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID do anime a ser buscado (geralmente um ID do MongoDB).
       responses:
         '200':
           description: Detalhes do anime.
@@ -61,32 +68,89 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Anime'
+              examples:
+                exemplo:
+                  value:
+                    id: 60d5ec49f6a5b4001c9a0b1c
+                    title: "Attack on Titan"
+                    type: "TV"
+                    episodes_count: "25"
+                    studio: ["Wit Studio", "MAPPA"]
+                    genres: ["Ação", "Shonen"]
+                    rating: "9.1"
+                    dub: ["pt-BR", "en"]
+                    sub: ["pt-BR", "en"]
+                    imageUrl: ["https://cdn.com/anime1.jpg"]
+                    descriptions:
+                      - synopsis: "A humanidade vive protegida por muros gigantes..."
+                        background: "Baseado no mangá de Hajime Isayama."
+                        tags: ["ação", "drama"]
         '404':
           description: Anime não encontrado.
+        '400':
+          description: ID inválido fornecido.
     put:
       tags:
         - Animes
       summary: Atualiza um anime existente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID do anime a ser atualizado (geralmente um ID do MongoDB).
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AnimeInput'
+            examples:
+              exemplo:
+                value:
+                  title: "Jujutsu Kaisen"
+                  type: "TV"
+                  episodes_count: "24"
+                  studio: ["MAPPA"]
+                  genres: ["Aventura", "Sobrenatural"]
+                  rating: "8.9"
+                  dub: ["pt-BR"]
+                  sub: ["pt-BR"]
+                  imageUrl: ["https://cdn.com/jujutsu.jpg"]
+                  descriptions:
+                    - synopsis: "Itadori Yuji é um estudante do ensino médio..."
+                      background: "Baseado no mangá de Gege Akutami."
+                      tags: ["ação", "sobrenatural"]
       responses:
         '200':
           description: Anime atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
         '404':
           description: Anime não encontrado.
+        '400':
+          description: ID inválido fornecido.
     delete:
       tags:
         - Animes
       summary: Remove um anime pelo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID do anime a ser removido (geralmente um ID do MongoDB).
       responses:
         '204':
           description: Anime removido com sucesso. (No Content)
         '404':
           description: Anime não encontrado.
+        '400':
+          description: ID inválido fornecido.
 components:
   schemas:
     Anime:
@@ -97,47 +161,146 @@ components:
           type: string
           description: 'ID gerado automaticamente (ex: MongoDB ObjectId).'
           example: 60d5ec49f6a5b4001c9a0b1c
-        nome:
+        title:
           type: string
           description: Nome do anime.
           example: Attack on Titan
-        genero:
+        type:
           type: string
-          description: Gênero principal do anime.
-          example: Shonen
-        sinopse:
+          description: Tipo do anime (TV, Filme, OVA, etc).
+          example: TV
+        episodes_count:
           type: string
-          description: Breve descrição da história.
-          example: A humanidade vive protegida por muros gigantes...
-        nota:
-          type: number
-          format: float
-          description: Nota de avaliação (0 a 10).
-          example: 9.1
+          description: Quantidade de episódios.
+          example: "25"
+        studio:
+          type: array
+          items:
+            type: string
+          description: Lista de estúdios.
+          example: ["Wit Studio", "MAPPA"]
+        genres:
+          type: array
+          items:
+            type: string
+          description: Lista de gêneros.
+          example: ["Ação", "Shonen"]
+        rating:
+          type: string
+          description: Classificação indicativa do anime (ex: "14", "18", "Livre").
+          example: "14"
+        dub:
+          type: array
+          items:
+            type: string
+          description: Idiomas de dublagem disponíveis.
+          example: ["pt-BR", "en"]
+        sub:
+          type: array
+          items:
+            type: string
+          description: Idiomas de legenda disponíveis.
+          example: ["pt-BR", "en"]
+        imageUrl:
+          type: array
+          items:
+            type: string
+          description: URLs das imagens do anime.
+          example: ["https://cdn.com/anime1.jpg"]
+        descriptions:
+          type: array
+          items:
+            type: object
+            properties:
+              synopsis:
+                type: string
+                description: Sinopse do anime.
+                example: "A humanidade vive protegida por muros gigantes..."
+              background:
+                type: string
+                description: Contexto de fundo do anime.
+                example: "Baseado no mangá de Hajime Isayama."
+              tags:
+                type: array
+                items:
+                  type: string
+                description: Lista de tags.
+                example: ["ação", "drama"]
       required:
-        - nome
-        - genero
+        - title
+        - genres
+        - studio
+
     AnimeInput:
       type: object
       description: Dados necessários para criar ou atualizar um anime. Não inclui o ID.
       properties:
-        nome:
+        title:
           type: string
           description: Nome do anime.
           example: Jujutsu Kaisen
-        genero:
+        type:
           type: string
-          description: Gênero principal do anime.
-          example: Aventura, Sobrenatural
-        sinopse:
+          description: Tipo do anime.
+          example: TV
+        episodes_count:
           type: string
-          description: Breve descrição da história.
-          example: Itadori Yuji é um estudante do ensino médio com habilidades físicas incríveis...
-        nota:
-          type: number
-          format: float
-          description: Nota de avaliação (0 a 10).
-          example: 8.9
+          description: Quantidade de episódios.
+          example: "24"
+        studio:
+          type: array
+          items:
+            type: string
+          description: Lista de estúdios.
+          example: ["MAPPA"]
+        genres:
+          type: array
+          items:
+            type: string
+          description: Lista de gêneros.
+          example: ["Aventura", "Sobrenatural"]
+        rating:
+          type: string
+          description: Classificação indicativa do anime (ex: "14", "18", "Livre").
+          example: "14"
+        dub:
+          type: array
+          items:
+            type: string
+          description: Idiomas de dublagem disponíveis.
+          example: ["pt-BR"]
+        sub:
+          type: array
+          items:
+            type: string
+          description: Idiomas de legenda disponíveis.
+          example: ["pt-BR"]
+        imageUrl:
+          type: array
+          items:
+            type: string
+          description: URLs das imagens do anime.
+          example: ["https://cdn.com/jujutsu.jpg"]
+        descriptions:
+          type: array
+          items:
+            type: object
+            properties:
+              synopsis:
+                type: string
+                description: Sinopse do anime.
+                example: "Itadori Yuji é um estudante do ensino médio..."
+              background:
+                type: string
+                description: Contexto de fundo do anime.
+                example: "Baseado no mangá de Gege Akutami."
+              tags:
+                type: array
+                items:
+                  type: string
+                description: Lista de tags.
+                example: ["ação", "sobrenatural"]
       required:
-        - nome
-        - genero
+        - title
+        - genres
+        - studio
