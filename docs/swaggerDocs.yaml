@@ -1,306 +1,565 @@
 openapi: 3.0.0
 info:
-  title: API de Animes
-  description: Uma API RESTful desenvolvida para fornecer informações sobre animes. Este projeto foi criado como parte de um trabalho da disciplina de Desenvolvimento Web e tem como objetivo praticar a criação e consumo de APIs.
+  title: API Completa de Animes
   version: 1.0.0
+  description: |
+    Esta API RESTful foi desenvolvida para fornecer informações, cadastro e gerenciamento de animes e usuários. Permite operações de CRUD para animes, autenticação de usuários e segue o padrão OpenAPI 3.0 para facilitar a integração e documentação. Ideal para estudos, testes e como base para projetos de consumo de APIs.
+    
+    Funcionalidades principais:
+    - Cadastro e autenticação de usuários
+    - Listagem, criação, atualização e remoção de animes
+    - Documentação interativa via Swagger
+    - Estrutura pronta para expansão com novos endpoints
+tags:
+  - name: Usuário
+    description: Rotas relacionadas a usuários
+  - name: Anime
+    description: Rotas relacionadas a animes
+
 servers:
-  - url: http://localhost:4000/api/animes
-    description: Servidor local
+  - url: http://localhost:4005
+
+components:
+  schemas:
+    Description:
+      type: object
+      properties:
+        synopsis:
+          type: string
+        background:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    Anime:
+      type: object
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+        episodes_count:
+          type: string
+        studio:
+          type: string
+        genres:
+          type: string
+        rating:
+          type: string
+        dub:
+          type: string
+        sub:
+          type: string
+        imageUrl:
+          type: string
+        descriptions:
+          $ref: '#/components/schemas/Description'
+      example:
+        title: "Fullmetal Alchemist: Brotherhood"
+        type: "TV"
+        episodes_count: "64"
+        studio: "Bones"
+        genres: "Action, Adventure, Fantasy"
+        rating: "9.2"
+        dub: "Sim"
+        sub: "Sim"
+        imageUrl: "https://cdn.example.com/fma.jpg"
+        descriptions:
+          - synopsis: "Dois irmãos buscam a Pedra Filosofal."
+            background: "Baseado no mangá de Hiromu Arakawa."
+            tags: ["Ação", "Aventura", "Alquimia"]
+      examples:
+        - title: "One Piece"
+          type: "TV"
+          episodes_count: "1000+"
+          studio: "Toei Animation"
+          genres: "Adventure, Fantasy, Shounen"
+          rating: "8.9"
+          dub: "Sim"
+          sub: "Sim"
+          imageUrl: "https://cdn.example.com/onepiece.jpg"
+          descriptions:
+            - synopsis: "Piratas em busca do tesouro One Piece."
+              background: "Baseado no mangá de Eiichiro Oda."
+              tags: ["Aventura", "Piratas", "Shounen"]
+        - title: "Dragon Ball Z"
+          type: "TV"
+          episodes_count: "291"
+          studio: "Toei Animation"
+          genres: "Action, Adventure, Martial Arts"
+          rating: "8.7"
+          dub: "Sim"
+          sub: "Sim"
+          imageUrl: "https://cdn.example.com/dbz.jpg"
+          descriptions:
+            - synopsis: "Goku protege a Terra de vilões poderosos."
+              background: "Continuação de Dragon Ball."
+              tags: ["Ação", "Artes Marciais", "Clássico"]
+        - title: "Demon Slayer"
+          type: "TV"
+          episodes_count: "26"
+          studio: "ufotable"
+          genres: "Action, Supernatural, Historical"
+          rating: "8.8"
+          dub: "Sim"
+          sub: "Sim"
+          imageUrl: "https://cdn.example.com/demonslayer.jpg"
+          descriptions:
+            - synopsis: "Jovem luta contra demônios para salvar a irmã."
+              background: "Baseado no mangá de Koyoharu Gotouge."
+              tags: ["Ação", "Demônios", "Histórico"]
+        - title: "My Hero Academia"
+          type: "TV"
+          episodes_count: "113"
+          studio: "Bones"
+          genres: "Action, Superhero, Shounen"
+          rating: "8.4"
+          dub: "Sim"
+          sub: "Sim"
+          imageUrl: "https://cdn.example.com/mha.jpg"
+          descriptions:
+            - synopsis: "Jovem sem poderes sonha em ser herói."
+              background: "Baseado no mangá de Kohei Horikoshi."
+              tags: ["Ação", "Super-herói", "Shounen"]
+        - title: "Mob Psycho 100"
+          type: "TV"
+          episodes_count: "25"
+          studio: "Bones"
+          genres: "Action, Comedy, Supernatural"
+          rating: "8.6"
+          dub: "Sim"
+          sub: "Sim"
+          imageUrl: "https://cdn.example.com/mobpsycho.jpg"
+          descriptions:
+            - synopsis: "Garoto com poderes psíquicos tenta viver normalmente."
+              background: "Baseado no mangá de ONE."
+              tags: ["Ação", "Comédia", "Sobrenatural"]
+        - title: "Steins;Gate"
+          type: "TV"
+          episodes_count: "24"
+          studio: "White Fox"
+          genres: "Sci-Fi, Thriller"
+          rating: "9.1"
+          dub: "Sim"
+          sub: "Sim"
+          imageUrl: "https://cdn.example.com/steinsgate.jpg"
+          descriptions:
+            - synopsis: "Grupo descobre viagem no tempo."
+              background: "Baseado em visual novel."
+              tags: ["Sci-Fi", "Thriller", "Viagem no Tempo"]
+        - title: "Attack on Titan"
+          type: "TV"
+          episodes_count: "75"
+          studio: "Wit Studio"
+          genres: "Action, Drama, Fantasy"
+          rating: "9.0"
+          dub: "Sim"
+          sub: "Sim"
+          imageUrl: "https://cdn.example.com/aot.jpg"
+          descriptions:
+            - synopsis: "Humanidade luta contra titãs gigantes."
+              background: "Baseado no mangá de Hajime Isayama."
+              tags: ["Ação", "Drama", "Titãs"]
+
 paths:
+  /user:
+    post:
+      tags:
+        - Usuário
+      summary: Cria um novo usuário
+      description: |
+        Cria um novo usuário no sistema. Recebe nome, email e senha no corpo da requisição.
+        Retorna mensagem de sucesso ou erro de validação.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              name: "Vinicius"
+              email: "vinicius@email.com"
+              password: "abc123"
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              example:
+                success: "Usuário cadastrado com sucesso!"
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              example:
+                error: "Dados inválidos"
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                error: "Erro interno do servidor."
+  /login:
+    post:
+      tags:
+        - Usuário
+      summary: Realiza login do usuário
+      description: |
+        Realiza a autenticação do usuário. Recebe email e senha no corpo da requisição.
+        Retorna um token JWT em caso de sucesso ou mensagem de erro em caso de falha.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            example:
+              email: "vinicius@email.com"
+              password: "abc123"
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              example:
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              example:
+                error: "Credenciais inválidas!"
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                error: "Erro interno do servidor."
   /animes:
     get:
       tags:
-        - Animes
-      summary: Retorna a lista de todos os animes cadastrados
+        - Anime
+      summary: Lista todos os animes
+      description: |
+        Retorna uma lista de todos os animes cadastrados no sistema. Não requer parâmetros.
       responses:
         '200':
-          description: Lista de animes obtida com sucesso.
+          description: Lista de animes fictícios
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Anime'
-        '500':
-          description: Erro interno do servidor.
+              examples:
+                demonSlayer:
+                  value:
+                    - title: "Demon Slayer: Kimetsu no Yaiba"
+                      type: "Anime"
+                      episodes_count: "4 temporadas (cerca de 63 episódios até o momento) + 1 Filme de maior bilheteria"
+                      studio: ["ufotable"]
+                      genres: ["Ação", "Fantasia Sombria", "Artes Marciais", "Aventura"]
+                      rating: "A14 (Violência, Luta com espadas)"
+                      dub: ["Português (BR)", "Inglês", "Japonês", "Espanhol"]
+                      sub: ["Português", "Inglês", "Japonês", "Espanhol"]
+                      imageUrl: ["https://i.imgur.com/link-principal-da-capa.jpg"]
+                      descriptions:
+                        - synopsis: "Depois que sua família é massacrada por um demônio e sua irmã é transformada em um, Tanjiro Kamado se junta aos Caçadores de Demônios em uma jornada perigosa para vingar sua família e encontrar a cura para sua irmã, Nezuko."
+                          background: "Um fenômeno global conhecido por sua animação visualmente deslumbrante e sequências de ação de altíssima qualidade. O filme Mugen Train se tornou um dos filmes de anime de maior bilheteria de todos os tempos."
+                          tags: ["Shounen", "Época Taisho", "Espadas", "Sobrenatural", "Missão"]
+                    - title: "Samurai Moon"
+                      type: "Anime"
+                      episodes_count: "2 temporadas (24 episódios)"
+                      studio: ["Studio Fictício"]
+                      genres: ["Aventura", "Drama"]
+                      rating: "Livre"
+                      dub: ["Português"]
+                      sub: ["Português", "Inglês"]
+                      imageUrl: ["https://cdn.example.com/samuraimoon.jpg"]
+                      descriptions:
+                        - synopsis: "Samurai busca a lendária lua para salvar seu clã."
+                          background: "Anime fictício para testes."
+                          tags: ["Samurai", "Lua", "Aventura"]
+                    - title: "Cyber Ninja"
+                      type: "Anime"
+                      episodes_count: "1 temporada (12 episódios)"
+                      studio: ["Neon Studio"]
+                      genres: ["Ação", "Sci-Fi"]
+                      rating: "A12"
+                      dub: ["Japonês"]
+                      sub: ["Português", "Inglês"]
+                      imageUrl: ["https://cdn.example.com/cyberninja.jpg"]
+                      descriptions:
+                        - synopsis: "Ninja cibernético luta contra corporações malignas."
+                          background: "Produção original fictícia."
+                          tags: ["Ninja", "Futuro", "Ação"]
+                    - title: "Magical Bakery"
+                      type: "OVA"
+                      episodes_count: "3 episódios"
+                      studio: ["SweetWorks"]
+                      genres: ["Comédia", "Slice of Life"]
+                      rating: "Livre"
+                      dub: ["Português", "Inglês"]
+                      sub: ["Português", "Inglês"]
+                      imageUrl: ["https://cdn.example.com/magicalbakery.jpg"]
+                      descriptions:
+                        - synopsis: "Jovens bruxas abrem uma padaria mágica."
+                          background: "Especial de comédia fictício."
+                          tags: ["Bruxas", "Comédia", "Cotidiano"]
+                    - title: "Galaxy Racers"
+                      type: "Anime"
+                      episodes_count: "50 episódios"
+                      studio: ["Star Animation"]
+                      genres: ["Esporte", "Sci-Fi"]
+                      rating: "A10"
+                      dub: ["Português", "Inglês"]
+                      sub: ["Português", "Inglês"]
+                      imageUrl: ["https://cdn.example.com/galaxyracers.jpg"]
+                      descriptions:
+                        - synopsis: "Corridas intergalácticas com naves futuristas."
+                          background: "Anime fictício de ação e esporte."
+                          tags: ["Corrida", "Futuro", "Ação"]
     post:
       tags:
-        - Animes
-      summary: Cria um novo registro de anime
+        - Anime
+      summary: Cria um novo anime
+      description: |
+        Adiciona um novo anime ao sistema. Recebe os dados do anime no corpo da requisição.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AnimeInput'
-      responses:
+              type: object
+              properties:
+                title:
+                  type: string
+                type:
+                  type: string
+                episodes_count:
+                  type: string
+                studio:
+                  type: array
+                  items:
+                    type: string
+                genres:
+                  type: array
+                  items:
+                    type: string
+                rating:
+                  type: string
+                dub:
+                  type: array
+                  items:
+                    type: string
+                sub:
+                  type: array
+                  items:
+                    type: string
+                imageUrl:
+                  type: array
+                  items:
+                    type: string
+                descriptions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      synopsis:
+                        type: string
+                      background:
+                        type: string
+                      tags:
+                        type: array
+                        items:
+                          type: string
+            example:
+              title: "Demon Slayer: Kimetsu no Yaiba"
+              type: "Anime"
+              episodes_count: "4 temporadas (cerca de 63 episódios até o momento) + 1 Filme de maior bilheteria"
+              studio: ["ufotable"]
+              genres: ["Ação", "Fantasia Sombria", "Artes Marciais", "Aventura"]
+              rating: "A14 (Violência, Luta com espadas)"
+              dub: ["Português (BR)", "Inglês", "Japonês", "Espanhol"]
+              sub: ["Português", "Inglês", "Japonês", "Espanhol"]
+              imageUrl: ["https://i.imgur.com/link-principal-da-capa.jpg"]
+              descriptions:
+                - synopsis: "Depois que sua família é massacrada por um demônio e sua irmã é transformada em um, Tanjiro Kamado se junta aos Caçadores de Demônios em uma jornada perigosa para vingar sua família e encontrar a cura para sua irmã, Nezuko."
+                  background: "Baseado no mangá de Koyoharu Gotouge."
+                  tags: ["Ação", "Demônios", "Histórico"]
+  responses:
         '201':
-          description: Anime criado com sucesso.
+          description: Anime criado
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Anime'
-        '400':
-          description: Dados de entrada inválidos.
   /animes/{id}:
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: string
-        description: ID do anime a ser buscado (geralmente um ID do MongoDB).
     get:
       tags:
-        - Animes
-      summary: Retorna um anime específico pelo ID
+        - Anime
+      summary: Busca um anime por ID
+      description: |
+        Retorna os dados de um anime específico, identificado pelo seu ID.
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
             type: string
-          description: ID do anime a ser buscado (geralmente um ID do MongoDB).
       responses:
         '200':
-          description: Detalhes do anime.
+          description: Anime encontrado
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Anime'
-              examples:
-                exemplo:
-                  value:
-                    id: 60d5ec49f6a5b4001c9a0b1c
-                    title: "Attack on Titan"
-                    type: "TV"
-                    episodes_count: "25"
-                    studio: ["Wit Studio", "MAPPA"]
-                    genres: ["Ação", "Shonen"]
-                    rating: "9.1"
-                    dub: ["pt-BR", "en"]
-                    sub: ["pt-BR", "en"]
-                    imageUrl: ["https://cdn.com/anime1.jpg"]
-                    descriptions:
-                      - synopsis: "A humanidade vive protegida por muros gigantes..."
-                        background: "Baseado no mangá de Hajime Isayama."
-                        tags: ["ação", "drama"]
+              example:
+                title: "Demon Slayer: Kimetsu no Yaiba"
+                type: "Anime"
+                episodes_count: "4 temporadas (cerca de 63 episódios até o momento) + 1 Filme de maior bilheteria"
+                studio: ["ufotable"]
+                genres: ["Ação", "Fantasia Sombria", "Artes Marciais", "Aventura"]
+                rating: "A14 (Violência, Luta com espadas)"
+                dub: ["Português (BR)", "Inglês", "Japonês", "Espanhol"]
+                sub: ["Português", "Inglês", "Japonês", "Espanhol"]
+                imageUrl: ["https://i.imgur.com/link-principal-da-capa.jpg"]
+                descriptions:
+                  - synopsis: "Depois que sua família é massacrada por um demônio e sua irmã é transformada em um, Tanjiro Kamado se junta aos Caçadores de Demônios em uma jornada perigosa para vingar sua família e encontrar a cura para sua irmã, Nezuko."
+                    background: "Baseado no mangá de Koyoharu Gotouge."
+                    tags: ["Ação", "Demônios", "Histórico"]
         '404':
-          description: Anime não encontrado.
-        '400':
-          description: ID inválido fornecido.
+          description: Anime não encontrado
     put:
       tags:
-        - Animes
-      summary: Atualiza um anime existente
+        - Anime
+      summary: Atualiza um anime por ID
+      description: |
+        Atualiza os dados de um anime existente, identificado pelo seu ID.
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
             type: string
-          description: ID do anime a ser atualizado (geralmente um ID do MongoDB).
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AnimeInput'
-            examples:
-              exemplo:
-                value:
-                  title: "Jujutsu Kaisen"
-                  type: "TV"
-                  episodes_count: "24"
-                  studio: ["MAPPA"]
-                  genres: ["Aventura", "Sobrenatural"]
-                  rating: "8.9"
-                  dub: ["pt-BR"]
-                  sub: ["pt-BR"]
-                  imageUrl: ["https://cdn.com/jujutsu.jpg"]
-                  descriptions:
-                    - synopsis: "Itadori Yuji é um estudante do ensino médio..."
-                      background: "Baseado no mangá de Gege Akutami."
-                      tags: ["ação", "sobrenatural"]
+              type: object
+              properties:
+                title:
+                  type: string
+                type:
+                  type: string
+                episodes_count:
+                  type: string
+                studio:
+                  type: array
+                  items:
+                    type: string
+                genres:
+                  type: array
+                  items:
+                    type: string
+                rating:
+                  type: string
+                dub:
+                  type: array
+                  items:
+                    type: string
+                sub:
+                  type: array
+                  items:
+                    type: string
+                imageUrl:
+                  type: array
+                  items:
+                    type: string
+                descriptions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      synopsis:
+                        type: string
+                      background:
+                        type: string
+                      tags:
+                        type: array
+                        items:
+                          type: string
+            example:
+              title: "Demon Slayer: Kimetsu no Yaiba"
+              type: "Anime"
+              episodes_count: "4 temporadas (cerca de 63 episódios até o momento) + 1 Filme de maior bilheteria"
+              studio: ["ufotable"]
+              genres: ["Ação", "Fantasia Sombria", "Artes Marciais", "Aventura"]
+              rating: "A14 (Violência, Luta com espadas)"
+              dub: ["Português (BR)", "Inglês", "Japonês", "Espanhol"]
+              sub: ["Português", "Inglês", "Japonês", "Espanhol"]
+              imageUrl: ["https://i.imgur.com/link-principal-da-capa.jpg"]
+              descriptions:
+                - synopsis: "Depois que sua família é massacrada por um demônio e sua irmã é transformada em um, Tanjiro Kamado se junta aos Caçadores de Demônios em uma jornada perigosa para vingar sua família e encontrar a cura para sua irmã, Nezuko."
+                  background: "Baseado no mangá de Koyoharu Gotouge."
+                  tags: ["Ação", "Demônios", "Histórico"]
       responses:
         '200':
-          description: Anime atualizado com sucesso.
+          description: Anime atualizado com sucesso
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Anime'
+              example:
+                message: "Anime atualizado com sucesso."
         '404':
-          description: Anime não encontrado.
-        '400':
-          description: ID inválido fornecido.
+          description: Anime não encontrado
+          content:
+            application/json:
+              example:
+                error: "Anime não encontrado."
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                error: "Erro interno do servidor."
     delete:
       tags:
-        - Animes
-      summary: Remove um anime pelo ID
+        - Anime
+      summary: Remove um anime por ID
+      description: |
+        Remove um anime do sistema, identificado pelo seu ID.
       parameters:
-        - in: path
-          name: id
+        - name: id
+          in: path
           required: true
           schema:
             type: string
-          description: ID do anime a ser removido (geralmente um ID do MongoDB).
       responses:
         '204':
-          description: Anime removido com sucesso. (No Content)
+          description: Anime removido
         '404':
-          description: Anime não encontrado.
-        '400':
-          description: ID inválido fornecido.
-components:
-  schemas:
-    Anime:
-      type: object
-      description: Modelo de dados de um anime, incluindo o ID após a criação.
-      properties:
-        id:
-          type: string
-          description: 'ID gerado automaticamente (ex: MongoDB ObjectId).'
-          example: 60d5ec49f6a5b4001c9a0b1c
-        title:
-          type: string
-          description: Nome do anime.
-          example: Attack on Titan
-        type:
-          type: string
-          description: Tipo do anime (TV, Filme, OVA, etc).
-          example: TV
-        episodes_count:
-          type: string
-          description: Quantidade total de episódios (somando todas as temporadas). Exemplo: "2 temporadas, 24 episódios".
-          example: "2 temporadas, 24 episódios"
-        studio:
-          type: array
-          items:
-            type: string
-          description: Lista de estúdios.
-          example: ["Wit Studio", "MAPPA"]
-        genres:
-          type: array
-          items:
-            type: string
-          description: Lista de gêneros.
-          example: ["Ação", "Shonen"]
-        rating:
-          type: string
-          description: Classificação indicativa do anime (ex: "14", "18", "Livre").
-          example: "14"
-        dub:
-          type: array
-          items:
-            type: string
-          description: Idiomas de dublagem disponíveis.
-          example: ["pt-BR", "en"]
-        sub:
-          type: array
-          items:
-            type: string
-          description: Idiomas de legenda disponíveis.
-          example: ["pt-BR", "en"]
-        imageUrl:
-          type: array
-          items:
-            type: string
-          description: URLs das imagens do anime.
-          example: ["https://cdn.com/anime1.jpg"]
-        descriptions:
-          type: array
-          items:
-            type: object
-            properties:
-              synopsis:
-                type: string
-                description: Sinopse do anime.
-                example: "A humanidade vive protegida por muros gigantes..."
-              background:
-                type: string
-                description: Contexto de fundo do anime.
-                example: "Baseado no mangá de Hajime Isayama."
-              tags:
-                type: array
-                items:
-                  type: string
-                description: Lista de tags.
-                example: ["ação", "drama"]
-      required:
-        - title
-        - genres
-        - studio
-
-    AnimeInput:
-      type: object
-      description: Dados necessários para criar ou atualizar um anime. Não inclui o ID.
-      properties:
-        title:
-          type: string
-          description: Nome do anime.
-          example: Jujutsu Kaisen
-        type:
-          type: string
-          description: Tipo do anime.
-          example: TV
-        episodes_count:
-          type: string
-          description: Quantidade total de episódios (somando todas as temporadas). Exemplo: "2 temporadas, 24 episódios".
-          example: "2 temporadas, 24 episódios"
-        studio:
-          type: array
-          items:
-            type: string
-          description: Lista de estúdios.
-          example: ["MAPPA"]
-        genres:
-          type: array
-          items:
-            type: string
-          description: Lista de gêneros.
-          example: ["Aventura", "Sobrenatural"]
-        rating:
-          type: string
-          description: Classificação indicativa do anime (ex: "14", "18", "Livre").
-          example: "14"
-        dub:
-          type: array
-          items:
-            type: string
-          description: Idiomas de dublagem disponíveis.
-          example: ["pt-BR"]
-        sub:
-          type: array
-          items:
-            type: string
-          description: Idiomas de legenda disponíveis.
-          example: ["pt-BR"]
-        imageUrl:
-          type: array
-          items:
-            type: string
-          description: URLs das imagens do anime.
-          example: ["https://cdn.com/jujutsu.jpg"]
-        descriptions:
-          type: array
-          items:
-            type: object
-            properties:
-              synopsis:
-                type: string
-                description: Sinopse do anime.
-                example: "Itadori Yuji é um estudante do ensino médio..."
-              background:
-                type: string
-                description: Contexto de fundo do anime.
-                example: "Baseado no mangá de Gege Akutami."
-              tags:
-                type: array
-                items:
-                  type: string
-                description: Lista de tags.
-                example: ["ação", "sobrenatural"]
-      required:
-        - title
-        - genres
-        - studio
+          description: Anime não encontrado
+          content:
+            application/json:
+              example:
+                error: "Anime não encontrado."
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example:
+                error: "Erro interno do servidor."
