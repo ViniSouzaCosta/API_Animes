@@ -171,8 +171,8 @@ components:
           example: TV
         episodes_count:
           type: string
-          description: Quantidade de episódios.
-          example: "25"
+          description: Quantidade total de episódios (somando todas as temporadas). Exemplo: "2 temporadas, 24 episódios".
+          example: "2 temporadas, 24 episódios"
         studio:
           type: array
           items:
@@ -245,8 +245,8 @@ components:
           example: TV
         episodes_count:
           type: string
-          description: Quantidade de episódios.
-          example: "24"
+          description: Quantidade total de episódios (somando todas as temporadas). Exemplo: "2 temporadas, 24 episódios".
+          example: "2 temporadas, 24 episódios"
         studio:
           type: array
           items:
